@@ -148,11 +148,26 @@ input::placeholder{color:#94a3b8;}
   <h1 class="home-title">Toutes vos demarches administratives, expliquees simplement</h1>
   <p class="home-sub">Trouvez les documents, etapes et liens officiels pour chaque demarche en France.</p>
   <div class="grid" id="secteursGrid"></div>
+  <div style="text-align:center;margin-top:48px;padding:20px;border-top:1px solid #e2e8f0">
+<button onclick="showMentions()" style="background:none;border:none;cursor:pointer;color:#94a3b8;font-family:'DM Sans',sans-serif;font-size:13px">Mentions legales</button>
+</div>
 </div>
 
 <div id="secteurPage" class="page hidden"></div>
 <div id="demarchePage" class="page hidden" style="max-width:800px"></div>
-
+<div id="mentionsPage" class="page hidden" style="max-width:800px">
+<button class="back-btn" onclick="showHome()">&#8592; Retour</button>
+<h1 style="font-family:'Outfit',sans-serif;font-size:24px;margin-bottom:24px">Mentions legales</h1>
+<div style="font-size:14px;color:#475569;line-height:1.8">
+<p style="margin-bottom:16px">Editeur du site : Jorge Moreira De Barros</p>
+<p style="margin-bottom:16px">Adresse : Aix-en-Provence, France</p>
+<p style="margin-bottom:16px">Email : moreiradebarrosjorge@gmail.com</p>
+<p style="margin-bottom:16px">Directeur de la publication : Jorge Moreira De Barros</p>
+<p style="margin-bottom:16px">Hebergeur : Vercel Inc., 440 N Barranca Ave #4133, Covina, CA 91723, USA</p>
+<p style="margin-bottom:16px">Les informations fournies sur ce site sont a titre indicatif et ne constituent pas un conseil juridique. Pour toute question complexe, consultez un professionnel du droit ou un service public competent.</p>
+<p style="margin-bottom:16px">Ce site ne collecte aucune donnee personnelle. Les statistiques de visite sont anonymes et realisees via GoatCounter, un outil conforme au RGPD qui ne depose aucun cookie.</p>
+</div>
+</div>
 <div id="chatPage" class="chat-page hidden">
   <div class="chat-header-box">
     <div class="chat-avatar">&#128172;</div>
@@ -296,11 +311,12 @@ function onSearchFocus(){sFocused=true;onSearch();}
 function clearSearch(){document.getElementById("searchInput").value="";document.getElementById("searchClear").classList.remove("show");document.getElementById("searchResults").classList.remove("active");}
 document.addEventListener("click",e=>{if(!e.target.closest(".search-box")){sFocused=false;document.getElementById("searchResults").classList.remove("active");}});
 
-function hideAll(){["homePage","secteurPage","demarchePage","chatPage"].forEach(id=>document.getElementById(id).classList.add("hidden"));document.getElementById("chatBtn").classList.remove("active");}
+function hideAll(){["homePage","secteurPage","demarchePage","chatPage","mentionsPage"].forEach(id=>document.getElementById(id).classList.add("hidden"));document.getElementById("chatBtn").classList.remove("active");}
 function showHome(){hideAll();document.getElementById("homePage").classList.remove("hidden");window.scrollTo(0,0);}
 function showSecteur(id){hideAll();const sec=SECTEURS.find(s=>s.id===id);const demarches=D.filter(d=>d.s===id);const pg=document.getElementById("secteurPage");pg.innerHTML=`<button class="back-btn" onclick="showHome()">\u2190 Retour</button><div class="secteur-header"><div class="secteur-icon" style="background:${sec.cl}">${sec.emoji}</div><div><div class="secteur-title">${sec.nom}</div><div class="secteur-count">${demarches.length} demarche${demarches.length>1?'s':''}</div></div></div><div class="demarche-list">${demarches.map(d=>`<button class="demarche-item" onclick="showDemarche('${d.id}')"><div><div class="demarche-item-title">${d.t}</div><div class="demarche-item-sub">${d.q.substring(0,90)}...</div></div><span style="color:#94a3b8;flex-shrink:0">\u203A</span></button>`).join("")}</div>`;pg.classList.remove("hidden");window.scrollTo(0,0);}
 function showDemarche(id){hideAll();const d=D.find(x=>x.id===id);const sec=SECTEURS.find(s=>s.id===d.s);const pg=document.getElementById("demarchePage");const S=(i,ti,co,col)=>`<div class="section"><div class="section-head"><span style="color:${col||sec.couleur};font-size:18px">${i}</span><span class="section-title">${ti}</span></div><div class="section-body">${co}</div></div>`;let h=`<button class="back-btn" onclick="showSecteur('${sec.id}')">\u2190 ${sec.nom}</button><div class="demarche-banner" style="background:${sec.cl};border-left-color:${sec.couleur}"><h1>${d.t}</h1><div class="demarche-meta"><span>Delais : ${d.dl}</span><span>Cout : ${d.c}</span></div></div>`;h+=S("\uD83D\uDC65","Pour qui ?",`<p>${d.q}</p>`);h+=S("\u2139\uFE0F","Prerequis",`<p>${d.p}</p>`);h+=S("\uD83D\uDCC4","Documents a fournir",d.d.map(x=>`<div class="doc-item"><div class="doc-dot" style="background:${sec.couleur}"></div><span>${x}</span></div>`).join(""));h+=S("\u2705","Etapes",d.e.map((x,i)=>`<div class="step-item"><div class="step-num" style="border-color:${sec.couleur};color:${sec.couleur};background:${sec.cl}">${i+1}</div><span style="padding-top:2px">${x}</span></div>`).join(""));h+=S("\uD83C\uDFDB\uFE0F","Ou faire la demarche",`<p>${d.o}</p>`);h+=S("\u23F0","Delais",`<p>${d.dl}</p>`);h+=S("\uD83D\uDCB2","Cout",`<p>${d.c}</p>`);h+=S("\u26A0\uFE0F","Erreurs frequentes",d.er.map(x=>`<div class="err-item"><span style="flex-shrink:0">\u26A0\uFE0F</span><span>${x}</span></div>`).join(""),"\u0023d97706");h+=S("\uD83D\uDD17","Liens officiels",d.l.map(x=>`<a class="link-item" href="${x.u}" target="_blank">\uD83D\uDD17 ${x.t}</a>`).join(""));pg.innerHTML=h;pg.classList.remove("hidden");window.scrollTo(0,0);}
-function showChat(){hideAll();const cp=document.getElementById("chatPage");cp.classList.remove("hidden");cp.style.height=(window.innerHeight-document.querySelector('.header').offsetHeight)+'px';document.getElementById("chatBtn").classList.add("active");setTimeout(()=>document.getElementById("chatInput").focus(),100);}
+function showMentions(){hideAll();document.getElementById("mentionsPage").classList.remove("hidden");window.scrollTo(0,0);}
+  function showChat(){hideAll();const cp=document.getElementById("chatPage");cp.classList.remove("hidden");cp.style.height=(window.innerHeight-document.querySelector('.header').offsetHeight)+'px';document.getElementById("chatBtn").classList.add("active");setTimeout(()=>document.getElementById("chatInput").focus(),100);}
 
 document.getElementById("secteursGrid").innerHTML=SECTEURS.map(s=>{const c=D.filter(d=>d.s===s.id).length;return`<div class="card" onclick="showSecteur('${s.id}')" onmouseenter="this.style.borderColor='${s.couleur}'" onmouseleave="this.style.borderColor='#e2e8f0'"><div class="card-icon" style="background:${s.cl}">${s.emoji}</div><div><div class="card-name">${s.nom}</div><div class="card-desc">${s.description}</div></div><div class="card-count">${c} demarche${c>1?'s':''}</div></div>`;}).join("");
 
