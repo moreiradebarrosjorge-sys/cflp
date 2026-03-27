@@ -1,0 +1,466 @@
+<!DOCTYPE html>
+<html lang="fr" style="color-scheme:light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="color-scheme" content="light only">
+<meta name="supported-color-schemes" content="light only">
+<title>CFLP - CommentFaireLesPapiers</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600&family=Outfit:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+html,body{background:#ffffff!important;color-scheme:light!important;}
+body{font-family:'DM Sans',sans-serif;color:#1e293b!important;-webkit-font-smoothing:antialiased;}
+::-webkit-scrollbar{width:6px;}
+::-webkit-scrollbar-thumb{background:#cbd5e1;border-radius:3px;}
+input::placeholder{color:#94a3b8;}
+
+.header{position:sticky;top:0;z-index:50;background:#ffffff!important;backdrop-filter:blur(12px);border-bottom:1px solid #e2e8f0;}
+.header-inner{max-width:1080px;margin:0 auto;padding:12px 20px;display:flex;align-items:center;gap:12px;}
+.logo-btn{background:none;border:none;cursor:pointer;display:flex;align-items:center;gap:8px;padding:0;flex-shrink:0;}
+.logo-icon{width:36px;height:36px;border-radius:10px;background:linear-gradient(135deg,#1e40af,#3b82f6);display:flex;align-items:center;justify-content:center;color:white;font-size:15px;font-family:'Outfit',sans-serif;}
+.logo-text{font-family:'Outfit',sans-serif;font-size:18px;color:#1e293b;letter-spacing:-0.3px;}
+.search-wrap{flex:1;display:flex;justify-content:center;min-width:0;}
+.search-box{position:relative;width:100%;max-width:540px;}
+.search-input-wrap{display:flex;align-items:center;background:#ffffff;border-radius:12px;padding:10px 16px;border:1.5px solid #d1d5db;transition:border 0.2s;}
+.search-input-wrap:focus-within{border-color:#2563eb;}
+.search-input{border:none;background:transparent;outline:none;margin-left:8px;font-size:15px;font-family:'DM Sans',sans-serif;width:100%;color:#1e293b;}
+.search-clear{background:none;border:none;cursor:pointer;padding:2px;color:#94a3b8;font-size:16px;display:none;}
+.search-clear.show{display:block;}
+.search-results{position:absolute;top:calc(100% + 6px);left:0;right:0;background:white;border-radius:12px;box-shadow:0 12px 40px rgba(0,0,0,0.12);z-index:100;overflow:hidden;border:1px solid #e2e8f0;display:none;max-height:70vh;overflow-y:auto;}
+.search-results.active{display:block;}
+.search-item{display:flex;align-items:center;gap:12px;width:100%;padding:12px 16px;border:none;background:white;cursor:pointer;text-align:left;border-bottom:1px solid #f1f5f9;font-family:'DM Sans',sans-serif;}
+.search-item:hover,.search-item:active{background:#f0f9ff;}
+.search-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;}
+.search-item-title{font-size:14px;color:#1e293b;}
+.search-item-cat{font-size:12px;color:#94a3b8;margin-top:2px;}
+.chat-btn{display:flex;align-items:center;gap:6px;background:#2563eb;color:white;border:none;border-radius:10px;padding:8px 14px;cursor:pointer;font-family:'DM Sans',sans-serif;font-size:14px;flex-shrink:0;}
+.chat-btn:hover{background:#1d4ed8;}
+.chat-btn.active{background:#1e40af;}
+
+.page{max-width:1080px;margin:0 auto;padding:40px 20px;background:#ffffff!important;}
+.home-title{font-family:'Outfit',sans-serif;font-size:32px;color:#1e293b!important;font-weight:500;margin-bottom:12px;line-height:1.2;text-align:center;}
+.home-sub{font-size:16px;color:#64748b!important;max-width:560px;margin:0 auto 48px;line-height:1.6;text-align:center;}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:16px;}
+.card{background:#ffffff!important;border:1px solid #e2e8f0;border-radius:16px;padding:24px;text-align:left;cursor:pointer;transition:all 0.2s;display:flex;flex-direction:column;gap:12px;}
+.card:hover{box-shadow:0 4px 20px rgba(0,0,0,0.06);}
+.card:active{transform:scale(0.98);}
+.card-icon{width:44px;height:44px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:22px;}
+.card-name{font-size:16px;color:#1e293b!important;margin-bottom:4px;}
+.card-desc{font-size:13px;color:#64748b!important;line-height:1.4;}
+.card-count{font-size:12px;color:#94a3b8!important;margin-top:auto;}
+
+.back-btn{display:inline-flex;align-items:center;gap:6px;background:none;border:none;cursor:pointer;color:#64748b;font-family:'DM Sans',sans-serif;font-size:14px;margin-bottom:24px;padding:4px 0;}
+.back-btn:hover{color:#2563eb;}
+.secteur-header{display:flex;align-items:center;gap:16px;margin-bottom:32px;}
+.secteur-icon{width:52px;height:52px;border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:26px;}
+.secteur-title{font-family:'Outfit',sans-serif;font-size:26px;color:#1e293b;font-weight:500;}
+.secteur-count{font-size:14px;color:#64748b;margin-top:2px;}
+.demarche-list{display:flex;flex-direction:column;gap:8px;}
+.demarche-item{display:flex;align-items:center;justify-content:space-between;background:#ffffff!important;border:1px solid #e2e8f0;border-radius:12px;padding:16px 20px;cursor:pointer;font-family:'DM Sans',sans-serif;transition:all 0.15s;text-align:left;}
+.demarche-item:hover,.demarche-item:active{border-color:#93c5fd;background:#f0f9ff;}
+.demarche-item-title{font-size:15px;color:#1e293b;}
+.demarche-item-sub{font-size:13px;color:#94a3b8;margin-top:4px;}
+
+.demarche-banner{border-radius:16px;padding:24px 28px;margin-bottom:32px;border-left:4px solid;}
+.demarche-banner h1{font-family:'Outfit',sans-serif;font-size:24px;color:#1e293b;font-weight:500;margin-bottom:8px;}
+.demarche-meta{display:flex;gap:16px;flex-wrap:wrap;font-size:13px;color:#64748b;}
+.section{margin-bottom:28px;}
+.section-head{display:flex;align-items:center;gap:8px;margin-bottom:10px;}
+.section-title{font-family:'Outfit',sans-serif;font-size:16px;color:#1e293b;}
+.section-body{padding-left:26px;font-size:14px;color:#475569;line-height:1.7;}
+.doc-item{display:flex;align-items:flex-start;gap:8px;margin-bottom:6px;}
+.doc-dot{width:6px;height:6px;border-radius:50%;margin-top:7px;flex-shrink:0;}
+.step-item{display:flex;gap:12px;align-items:flex-start;margin-bottom:10px;}
+.step-num{width:24px;height:24px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-family:'Outfit',sans-serif;font-size:12px;border:1.5px solid;}
+.err-item{display:flex;gap:8px;align-items:flex-start;background:#fffbeb;padding:10px 12px;border-radius:8px;margin-bottom:8px;color:#92400e;font-size:14px;}
+.link-item{color:#2563eb;text-decoration:none;display:flex;align-items:center;gap:6px;font-size:14px;margin-bottom:8px;}
+.link-item:hover{text-decoration:underline;}
+
+.chat-page{max-width:800px;margin:0 auto;padding:16px 20px 0;display:flex;flex-direction:column;overflow:hidden;background:#ffffff!important;}
+.chat-header-box{display:flex;align-items:center;gap:12px;margin-bottom:16px;flex-shrink:0;}
+.chat-avatar{width:44px;height:44px;border-radius:12px;background:linear-gradient(135deg,#1e40af,#3b82f6);display:flex;align-items:center;justify-content:center;color:white;font-size:20px;}
+.chat-title{font-family:'Outfit',sans-serif;font-size:18px;color:#1e293b;}
+.chat-subtitle{font-size:13px;color:#64748b;}
+.chat-messages{flex:1;overflow-y:auto;display:flex;flex-direction:column;gap:12px;padding-bottom:12px;-webkit-overflow-scrolling:touch;}
+.msg{display:flex;max-width:85%;}
+.msg.user{align-self:flex-end;}
+.msg.bot{align-self:flex-start;}
+.msg-bubble{padding:12px 16px;font-size:14px;line-height:1.7;word-wrap:break-word;overflow-wrap:break-word;}
+.msg.user .msg-bubble{background:#2563eb;color:white;border-radius:16px 16px 4px 16px;}
+.msg.bot .msg-bubble{background:white;color:#1e293b;border-radius:16px 16px 16px 4px;border:1px solid #e2e8f0;}
+.chat-input-wrap{display:flex;gap:8px;padding:12px 0;flex-shrink:0;border-top:1px solid #e2e8f0;}
+.chat-input{flex:1;padding:12px 16px;border-radius:12px;border:1.5px solid #d1d5db;font-family:'DM Sans',sans-serif;font-size:16px;outline:none;background:white;-webkit-appearance:none;}
+.chat-input:focus{border-color:#2563eb;}
+.chat-send{width:44px;height:44px;border-radius:12px;background:#e2e8f0;border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:18px;color:#94a3b8;flex-shrink:0;-webkit-tap-highlight-color:transparent;}
+.chat-send.active{background:#2563eb;color:white;}
+.typing-indicator{align-self:flex-start;padding:12px 16px;border-radius:16px 16px 16px 4px;background:white;border:1px solid #e2e8f0;font-size:14px;color:#94a3b8;}
+
+.hidden{display:none!important;}
+
+@media(max-width:640px){
+  .home-title{font-size:22px;}
+  .home-sub{font-size:14px;margin-bottom:32px;}
+  .header-inner{gap:8px;padding:10px 12px;}
+  .logo-text{display:none;}
+  .search-input{font-size:14px;}
+  .search-input-wrap{padding:8px 12px;}
+  .chat-btn span.chat-label{display:none;}
+  .chat-btn{padding:8px 10px;font-size:18px;}
+  .grid{grid-template-columns:1fr;gap:12px;}
+  .card{padding:18px;}
+  .page{padding:24px 16px;}
+  .demarche-banner{padding:18px 20px;}
+  .demarche-banner h1{font-size:20px;}
+  .secteur-title{font-size:22px;}
+  .chat-page{padding:12px 12px 0;}
+  .msg{max-width:92%;}
+  .msg-bubble{font-size:14px;padding:10px 14px;}
+}
+</style>
+</head>
+<body>
+
+<header class="header">
+  <div class="header-inner">
+    <button class="logo-btn" onclick="showHome()">
+      <div class="logo-icon">P</div>
+      <span class="logo-text">CFLP</span>
+    </button>
+    <div class="search-wrap">
+      <div class="search-box">
+        <div class="search-input-wrap">
+          <span style="color:#64748b;flex-shrink:0;font-size:16px">&#128269;</span>
+          <input class="search-input" id="searchInput" placeholder="Rechercher une demarche..." oninput="onSearch()" onfocus="onSearchFocus()" />
+          <button class="search-clear" id="searchClear" onclick="clearSearch()">&#10005;</button>
+        </div>
+        <div class="search-results" id="searchResults"></div>
+      </div>
+    </div>
+    <button class="chat-btn" id="chatBtn" onclick="showChat()">&#128172; <span class="chat-label">Assistant</span></button>
+  </div>
+</header>
+
+<div id="homePage" class="page">
+  <h1 class="home-title">Toutes vos demarches administratives, expliquees simplement</h1>
+  <p class="home-sub">Trouvez les documents, etapes et liens officiels pour chaque demarche en France.</p>
+  <div class="grid" id="secteursGrid"></div>
+</div>
+
+<div id="secteurPage" class="page hidden"></div>
+<div id="demarchePage" class="page hidden" style="max-width:800px"></div>
+
+<div id="chatPage" class="chat-page hidden">
+  <div class="chat-header-box">
+    <div class="chat-avatar">&#128172;</div>
+    <div>
+      <div class="chat-title">Assistant administratif</div>
+      <div class="chat-subtitle">Demarches administratives francaises</div>
+    </div>
+  </div>
+  <div class="chat-messages" id="chatMessages">
+    <div class="msg bot"><div class="msg-bubble">Bonjour, je suis l'assistant administratif de CFLP. Posez-moi votre question sur une demarche administrative en France.</div></div>
+  </div>
+  <div class="chat-input-wrap">
+    <input class="chat-input" id="chatInput" placeholder="Votre question..." onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();sendChat()}" oninput="updateSendBtn()" />
+    <button class="chat-send" id="chatSend" onclick="sendChat()">&#10148;</button>
+  </div>
+</div>
+
+<script>
+const SECTEURS=[
+  {id:"sante",nom:"Sante",description:"Carte vitale, mutuelle, remboursements, arret maladie, ALD",emoji:"\u2764\uFE0F",couleur:"#16a34a",cl:"#f0fdf4"},
+  {id:"logement",nom:"Logement",description:"APL, HLM, bail, assurance habitation, Visale, depot de garantie",emoji:"\uD83C\uDFE0",couleur:"#ea580c",cl:"#fff7ed"},
+  {id:"aides",nom:"Aides sociales",description:"CAF, RSA, prime d'activite, AAH, allocations, chomage",emoji:"\uD83D\uDCB0",couleur:"#9333ea",cl:"#faf5ff"},
+  {id:"citoyennete",nom:"Citoyennete et identite",description:"CNI, passeport, titre de sejour, nationalite, vote, casier judiciaire",emoji:"\uD83D\uDEE1\uFE0F",couleur:"#2563eb",cl:"#eff6ff"},
+  {id:"entreprise",nom:"Creation d'entreprise",description:"Auto-entrepreneur, SASU, SARL, KBIS, URSSAF, TVA",emoji:"\uD83C\uDFE2",couleur:"#0d9488",cl:"#f0fdfa"},
+  {id:"emploi",nom:"Emploi et formation",description:"France Travail, CPF, contrat, rupture conventionnelle, apprentissage",emoji:"\uD83D\uDCBC",couleur:"#4f46e5",cl:"#eef2ff"},
+  {id:"fiscalite",nom:"Fiscalite",description:"Impots, prelevement a la source, taxe fonciere, credits d'impot",emoji:"\uD83E\uDDFE",couleur:"#dc2626",cl:"#fef2f2"},
+  {id:"quotidien",nom:"Vie quotidienne",description:"Permis, carte grise, inscription scolaire, procuration, compte bancaire",emoji:"\uD83D\uDE97",couleur:"#d97706",cl:"#fffbeb"},
+  {id:"famille",nom:"Famille",description:"Naissance, mariage, PACS, divorce, succession, garde d'enfants",emoji:"\uD83D\uDC68\u200D\uD83D\uDC69\u200D\uD83D\uDC67\u200D\uD83D\uDC66",couleur:"#db2777",cl:"#fdf2f8"},
+];
+
+const D=[
+{id:"carte-vitale",s:"sante",t:"Carte vitale : premiere demande",q:"Toute personne travaillant ou residant en France de maniere stable depuis plus de 3 mois.",p:"Affiliation CPAM. Numero de Securite sociale definitif.",d:["Formulaire S1106 (cerfa 12504)","Piece d'identite","Photo d'identite 35x45mm fond blanc","RIB","Justificatif de domicile < 3 mois"],e:["Verifier votre affiliation sur ameli.fr ou au 3646","Telecharger le formulaire S1106 sur ameli.fr","Reunir les pieces","Envoyer a votre CPAM par courrier ou en agence","Attendre la reception (2-4 semaines)","Activer en pharmacie"],o:"ameli.fr, courrier ou agence CPAM",dl:"2 a 4 semaines",c:"Gratuit",er:["Photo non conforme","Formulaire non signe","Ne pas mettre a jour apres changement de situation"],l:[{t:"ameli.fr - Carte vitale",u:"https://www.ameli.fr/assure/droits-demarches/principes/carte-vitale"}],m:["carte vitale","securite sociale","cpam","remboursement","assurance maladie"]},
+
+{id:"carte-vitale-perte",s:"sante",t:"Carte vitale : perte ou vol",q:"Toute personne ayant perdu ou s'etant fait voler sa carte vitale.",p:"Etre affilie CPAM. Espace ameli.fr.",d:["Aucun document si demande en ligne"],e:["Se connecter a ameli.fr > Mes demarches","Commander une carte vitale > Perte ou vol","Confirmer l'adresse","Telecharger l'attestation temporaire en attendant","Reception sous 2-3 semaines"],o:"ameli.fr ou agence CPAM",dl:"2-3 semaines",c:"Gratuit",er:["Ne pas telecharger l'attestation temporaire","Oublier de mettre a jour la nouvelle carte avec la mutuelle"],l:[{t:"ameli.fr",u:"https://www.ameli.fr/assure/droits-demarches/principes/carte-vitale"}],m:["perte carte vitale","vol carte vitale","nouvelle carte vitale"]},
+
+{id:"c2s",s:"sante",t:"Complementaire sante solidaire (C2S)",q:"Personnes aux revenus modestes residant en France.",p:"Affiliation Securite sociale. Ressources sous les plafonds.",d:["Formulaire S3711","Justificatifs de ressources 12 mois","Piece d'identite","Justificatif de domicile","RIB"],e:["Simuler l'eligibilite sur ameli.fr","Remplir le formulaire S3711","Joindre les justificatifs","Envoyer a la CPAM","Decision sous 2 mois","Choisir l'organisme complementaire"],o:"ameli.fr ou courrier CPAM",dl:"2 mois max",c:"Gratuit ou 0 a 30 euros/mois",er:["Oublier des revenus du foyer","Confondre C2S gratuite et avec participation","Oublier le renouvellement annuel"],l:[{t:"ameli.fr - C2S",u:"https://www.ameli.fr/assure/droits-demarches/difficultes-acces-droits-soins/complementaire-sante-solidaire"}],m:["c2s","cmu","mutuelle gratuite","aide sante"]},
+
+{id:"medecin-traitant",s:"sante",t:"Declaration du medecin traitant",q:"Toute personne de 16 ans ou plus affiliee a la Securite sociale.",p:"Carte vitale ou attestation de droits.",d:["Carte vitale","Formulaire rempli avec le medecin"],e:["Choisir un medecin","Remplir le formulaire ensemble","Transmission electronique a la CPAM","Verifier sur ameli.fr"],o:"Chez le medecin",dl:"Immediat",c:"Gratuit (hors consultation)",er:["Sans declaration : -40% de remboursement","Oublier de changer apres demenagement"],l:[{t:"ameli.fr - Medecin traitant",u:"https://www.ameli.fr/assure/remboursements/etre-bien-rembourse/medecin-traitant"}],m:["medecin traitant","generaliste","parcours de soins"]},
+
+{id:"ald",s:"sante",t:"Affection longue duree (ALD)",q:"Personnes atteintes d'une maladie grave ou chronique (diabete, cancer, VIH...).",p:"Medecin traitant declare. Maladie figurant sur la liste des 30 ALD.",d:["Protocole de soins rempli par le medecin"],e:["Consulter votre medecin traitant","Le medecin remplit le protocole de soins","Envoi au medecin-conseil CPAM","Validation par la CPAM (sous 1 mois)","Exoneration du ticket moderateur pour les soins lies a l'ALD","Mettre a jour la carte vitale"],o:"Initiee par le medecin traitant",dl:"Environ 1 mois",c:"Gratuit. Soins lies rembourses a 100%.",er:["Ne pas savoir que c'est le medecin qui initie","Oublier la mise a jour carte vitale","Croire que l'ALD couvre tous les soins"],l:[{t:"ameli.fr - ALD",u:"https://www.ameli.fr/assure/droits-demarches/maladie-accident-hospitalisation/affection-longue-duree-ald"}],m:["ald","affection longue duree","maladie chronique","100 pourcent"]},
+
+{id:"ceam",s:"sante",t:"Carte europeenne d'assurance maladie (CEAM)",q:"Tout assure partant temporairement en UE, EEE ou Suisse.",p:"Affiliation Securite sociale francaise.",d:["Aucun document (demande en ligne)"],e:["Se connecter a ameli.fr","Mes demarches > Commander ma CEAM","Confirmer l'adresse","Reception sous 2 semaines","En urgence : certificat provisoire immediat"],o:"ameli.fr ou application Ameli",dl:"2 semaines (certificat provisoire immediat)",c:"Gratuit",er:["S'y prendre trop tard","Croire que ca remplace une assurance voyage","Ne marche pas hors Europe"],l:[{t:"ameli.fr - CEAM",u:"https://www.ameli.fr/assure/droits-demarches/europe-international/carte-europeenne-assurance-maladie-ceam"}],m:["ceam","carte europeenne","voyage europe","soins etranger"]},
+
+{id:"arret-maladie",s:"sante",t:"Arret maladie : droits et demarches",q:"Tout salarie ou travailleur en incapacite temporaire de travail.",p:"Affiliation Securite sociale.",d:["Avis d'arret de travail (3 volets, delivre par le medecin)"],e:["Consulter un medecin","Le medecin delivre l'arret en 3 volets","Volets 1 et 2 transmis a la CPAM par le medecin","Envoyer le volet 3 a l'employeur sous 48h","Respecter les heures de sortie (9h-11h, 14h-16h)","Indemnites journalieres apres 3 jours de carence"],o:"Chez le medecin",dl:"3 jours de carence",c:"Gratuit",er:["Retard d'envoi du volet 3 a l'employeur","Ne pas respecter les heures de sortie","Ignorer les 3 jours de carence non indemnises"],l:[{t:"ameli.fr - Arret maladie",u:"https://www.ameli.fr/assure/remboursements/indemnites-journalieres"}],m:["arret maladie","indemnites journalieres","conge maladie"]},
+
+{id:"apl",s:"logement",t:"Aide personnalisee au logement (APL)",q:"Locataires d'un logement conventionne. Conditions de ressources.",p:"Bail signe. Residence principale. Pas de parente avec le proprietaire.",d:["Numero allocataire CAF","Bail","Montant loyer hors charges","Avis d'imposition N-2","RIB","Numero Securite sociale"],e:["Creer un compte caf.fr","Mes demarches > Demande de prestation","Selectionner Aide au logement","Remplir avec les infos du bail","Joindre les justificatifs","Valider","Suivre sur l'espace CAF"],o:"caf.fr ou agence CAF",dl:"1-2 mois. Non retroactif.",c:"Gratuit",er:["Ne pas faire la demande des l'emmenagement","Oublier de signaler un changement","Confondre APL, ALF et ALS"],l:[{t:"caf.fr - Aide au logement",u:"https://www.caf.fr/allocataires/droits-et-prestations/s-informer-sur-les-aides/logement-et-cadre-de-vie/les-aides-au-logement"}],m:["apl","aide logement","allocation logement","aide loyer","apl etudiant"]},
+
+{id:"hlm",s:"logement",t:"Demande de logement social (HLM)",q:"Toute personne en situation reguliere, ressources sous les plafonds HLM.",p:"Situation reguliere. Ressources sous les plafonds.",d:["Piece d'identite ou titre de sejour","Avis d'imposition N-2","Justificatif de domicile"],e:["Aller sur demande-logement-social.gouv.fr","Creer un compte et remplir le formulaire","Obtenir le numero unique (NUE)","Renouveler chaque annee","Attendre une proposition","Visiter et repondre sous 10 jours"],o:"demande-logement-social.gouv.fr ou mairie",dl:"Quelques mois a plusieurs annees",c:"Gratuit",er:["Oublier le renouvellement annuel","Ne viser qu'une commune","Ne pas mettre a jour ses infos"],l:[{t:"demande-logement-social.gouv.fr",u:"https://www.demande-logement-social.gouv.fr"}],m:["hlm","logement social","demande hlm"]},
+
+{id:"visale",s:"logement",t:"Garantie Visale (caution gratuite)",q:"18-30 ans (tout statut) et salaries 30+ en mobilite ou precarite.",p:"Demande avant la signature du bail.",d:["Piece d'identite","Justificatifs de revenus","Contrat de travail ou attestation de statut"],e:["Creer un compte sur visale.fr","Remplir le formulaire","Joindre les justificatifs","Obtenir le visa (sous 2 jours)","Transmettre au proprietaire","Le proprietaire valide sur visale.fr"],o:"visale.fr",dl:"2 jours ouvrables",c:"Gratuit",er:["Demander apres la signature du bail","Ne pas transmettre le visa au proprio","Croire que Visale couvre les degradations"],l:[{t:"visale.fr",u:"https://www.visale.fr"}],m:["visale","garant","caution gratuite","garantie loyer"]},
+
+{id:"assurance-habitation",s:"logement",t:"Assurance habitation",q:"Tout locataire (obligatoire). Proprietaire occupant (recommande).",p:"Bail signe ou proprietaire.",d:["Bail","Superficie","Nombre de pieces"],e:["Comparer les offres","Choisir la formule","Souscrire le contrat","Recevoir l'attestation","Transmettre au proprietaire chaque annee"],o:"En ligne ou en agence assurance",dl:"Immediat",c:"5 a 30 euros/mois",er:["Ne pas souscrire en tant que locataire","Sous-estimer la valeur de ses biens","Oublier l'attestation annuelle au proprio"],l:[{t:"service-public.fr",u:"https://www.service-public.fr/particuliers/vosdroits/F2023"}],m:["assurance habitation","assurance logement","attestation assurance"]},
+
+{id:"etat-des-lieux",s:"logement",t:"Etat des lieux (entree et sortie)",q:"Tout locataire a l'entree et a la sortie du logement.",p:"Bail signe. Presence des deux parties.",d:["Bail","Formulaire d'etat des lieux","Photos datees"],e:["Inspecter chaque piece avec le proprietaire","Noter l'etat de chaque element","Prendre des photos datees","Signer le document a deux","Conserver un exemplaire","A la sortie : comparer avec l'entree"],o:"Dans le logement",dl:"Le jour de la remise des cles",c:"Gratuit (150-300 euros si huissier)",er:["Pas assez precis","Pas de photos","Ne pas signaler un probleme dans les 10 premiers jours"],l:[{t:"service-public.fr",u:"https://www.service-public.fr/particuliers/vosdroits/F31270"}],m:["etat des lieux","entree logement","sortie logement"]},
+
+{id:"depot-garantie",s:"logement",t:"Recuperation du depot de garantie",q:"Locataire quittant son logement.",p:"Cles rendues. Etat des lieux de sortie fait.",d:["Etats des lieux entree et sortie","Quittances de loyer","Photos"],e:["Rendre les cles et faire l'etat des lieux de sortie","Le proprietaire a 1 mois (sans degradation) ou 2 mois (avec)","Retenues justifiees par devis/factures","Si retard : mise en demeure par LRAR","En echec : conciliation ou tribunal"],o:"Par courrier recommande si necessaire",dl:"1 a 2 mois apres remise des cles",c:"Gratuit",er:["Pas d'etat des lieux de sortie","Accepter des retenues sans justificatif","Ne pas connaitre les delais legaux"],l:[{t:"service-public.fr",u:"https://www.service-public.fr/particuliers/vosdroits/F31269"}],m:["depot de garantie","caution","recuperer caution"]},
+
+{id:"rsa",s:"aides",t:"Revenu de solidarite active (RSA)",q:"Personnes de 25+ ans (exceptions 18-24 ans). Residant en France.",p:"25+ ans. Ressources sous le forfait (~607 euros/mois).",d:["Piece d'identite","Justificatif de domicile","RIB","Avis d'imposition","Ressources 3 derniers mois","Attestation France Travail"],e:["Simuler sur caf.fr","Demande en ligne","Remplir le formulaire","Joindre les justificatifs","Signer le contrat d'engagement","Declaration trimestrielle des ressources"],o:"caf.fr, agence CAF ou CCAS",dl:"~1 mois. Versement le 5.",c:"Gratuit",er:["Oublier la declaration trimestrielle","Ne pas signaler un changement","Ne pas respecter les engagements"],l:[{t:"caf.fr - RSA",u:"https://www.caf.fr/allocataires/droits-et-prestations/s-informer-sur-les-aides/solidarite-et-insertion/le-revenu-de-solidarite-active-rsa"}],m:["rsa","revenu solidarite","aide financiere","minimum social"]},
+
+{id:"prime-activite",s:"aides",t:"Prime d'activite",q:"Salaries, independants, fonctionnaires 18+ aux revenus modestes.",p:"Activite pro. Revenus < ~1 900 euros nets.",d:["Numero allocataire CAF","Bulletins de paie 3 mois","Avis d'imposition","RIB"],e:["Simulation sur caf.fr","Cliquer Faire la demande","Remplir","Valider","Declaration trimestrielle"],o:"caf.fr uniquement",dl:"~1 mois. Le 5 du mois.",c:"Gratuit",er:["Ne pas savoir qu'on y a droit","Oublier la declaration","Oublier des revenus du foyer"],l:[{t:"caf.fr",u:"https://www.caf.fr/allocataires/droits-et-prestations/s-informer-sur-les-aides/solidarite-et-insertion/la-prime-d-activite"}],m:["prime activite","complement salaire","aide travailleur"]},
+
+{id:"alloc-familiales",s:"aides",t:"Allocations familiales",q:"Familles avec au moins 2 enfants de moins de 20 ans.",p:"Resider en France. 2+ enfants < 20 ans.",d:["Actes de naissance","Pieces d'identite","Justificatif de domicile","Avis d'imposition","RIB"],e:["Se connecter a caf.fr","Declarer la situation familiale","La CAF calcule automatiquement","Versement mensuel","Montant module selon les revenus"],o:"caf.fr ou agence CAF",dl:"Automatique apres declaration",c:"Gratuit",er:["Ne pas signaler un changement","Les allocations demarrent au 2e enfant","Oublier de declarer un enfant 16+ a charge"],l:[{t:"caf.fr",u:"https://www.caf.fr/allocataires/droits-et-prestations/s-informer-sur-les-aides/petite-enfance/les-allocations-familiales"}],m:["allocations familiales","allocations enfants","caf enfants"]},
+
+{id:"aah",s:"aides",t:"Allocation aux adultes handicapes (AAH)",q:"Adultes 20+ avec taux d'incapacite >= 80% (ou 50-79% avec restriction d'emploi).",p:"Taux reconnu par la CDAPH. Ressources sous les plafonds.",d:["Cerfa 15692 (demande MDPH)","Certificat medical < 6 mois","Piece d'identite","Justificatif de domicile","Avis d'imposition"],e:["Telecharger le formulaire MDPH","Certificat medical detaille par le medecin","Remplir le projet de vie","Envoyer a la MDPH du departement","Evaluation par la CDAPH","Si accord, versement par la CAF"],o:"MDPH du departement",dl:"4 a 8 mois",c:"Gratuit. Max ~971 euros/mois.",er:["Certificat medical pas assez detaille","Ne pas remplir le projet de vie","L'AAH n'est plus liee aux revenus du conjoint depuis 2023"],l:[{t:"service-public.fr - AAH",u:"https://www.service-public.fr/particuliers/vosdroits/F12242"}],m:["aah","handicap","mdph","allocation handicap"]},
+
+{id:"are",s:"aides",t:"Allocation chomage (ARE)",q:"Salaries ayant perdu involontairement leur emploi.",p:"6 mois travailles sur 24 mois. Inscrit France Travail. Apte au travail.",d:["Attestation employeur","Piece d'identite","RIB","Carte vitale"],e:["S'inscrire a France Travail sous 12 mois","Attestation employeur transmise automatiquement","Calcul des droits","Accepter ou contester","Premier versement apres carence (7 jours + delais)","Actualisation mensuelle"],o:"francetravail.fr",dl:"7 jours de carence minimum",c:"Gratuit. ~57% du salaire brut.",er:["S'inscrire trop tard","Oublier l'actualisation mensuelle","Ne pas contester un calcul incorrect"],l:[{t:"francetravail.fr",u:"https://www.francetravail.fr"}],m:["chomage","are","allocation chomage","indemnites"]},
+
+{id:"allocation-rentree",s:"aides",t:"Allocation de rentree scolaire (ARS)",q:"Familles modestes, enfants 6-18 ans scolarises.",p:"Ressources sous les plafonds. Enfants scolarises.",d:["Aucun pour 6-15 ans (automatique)","Certificat de scolarite pour 16-18 ans"],e:["Versement automatique pour 6-15 ans si allocataire CAF","Pour 16-18 ans : declarer la scolarite sur caf.fr en juillet","Versement fin aout"],o:"Automatique via CAF",dl:"Fin aout chaque annee",c:"Gratuit. ~400-470 euros/enfant.",er:["Oublier de declarer pour les 16-18 ans","Ne pas connaitre l'existence de l'ARS"],l:[{t:"caf.fr - ARS",u:"https://www.caf.fr/allocataires/droits-et-prestations/s-informer-sur-les-aides/enfance-et-jeunesse/l-allocation-de-rentree-scolaire"}],m:["allocation rentree","ars","rentree scolaire","fournitures"]},
+
+{id:"carte-identite",s:"citoyennete",t:"Carte nationale d'identite (CNI)",q:"Tout citoyen francais.",p:"Nationalite francaise.",d:["Photo conforme","Justificatif de domicile < 1 an","Acte de naissance < 3 mois (premiere demande)","Ancien titre (renouvellement)","Timbre 25 euros (perte/vol)"],e:["Pre-demande ants.gouv.fr","RDV en mairie","Se presenter avec originaux","Empreintes (des 12 ans)","Attendre fabrication","Retirer sous 3 mois"],o:"ants.gouv.fr puis mairie",dl:"2-6 semaines",c:"Gratuit (25 euros si perte/vol)",er:["Photo non conforme","Pas de pre-demande","Ne pas retirer sous 3 mois"],l:[{t:"ants.gouv.fr",u:"https://ants.gouv.fr/demarches-carte-nationale-d-identite"}],m:["carte identite","cni","piece identite"]},
+
+{id:"passeport",s:"citoyennete",t:"Passeport",q:"Tout citoyen francais.",p:"Nationalite francaise.",d:["Photo conforme","Justificatif de domicile < 1 an","Timbre fiscal (86/42/17 euros)","CNI ou acte de naissance < 3 mois","Ancien passeport (renouvellement)"],e:["Acheter le timbre fiscal","Pre-demande ants.gouv.fr","RDV en mairie","Se presenter avec originaux","Attendre fabrication","Retirer sous 3 mois"],o:"ants.gouv.fr puis mairie",dl:"2-6 semaines",c:"86 euros adulte, 42 euros 15-17 ans, 17 euros <15 ans",er:["Ne pas anticiper les delais","Oublier le timbre fiscal"],l:[{t:"ants.gouv.fr",u:"https://ants.gouv.fr/demarches-passeport"}],m:["passeport","voyage","renouveler passeport"]},
+
+{id:"titre-sejour",s:"citoyennete",t:"Titre de sejour (premiere demande)",q:"Etranger non-europeen restant en France plus de 3 mois.",p:"Entree reguliere (visa). Demande sous 2 mois.",d:["Passeport + visa","3 photos","Domicile < 6 mois","Ressources","Assurance maladie","Timbre 75-225 euros","Cerfa selon motif"],e:["Identifier le type de titre sur service-public.fr","Rassembler les documents","Demande ANEF en ligne","Deposer les pieces","Convocation prefecture","RDV avec originaux","Recepisse delivre pendant instruction","Retrait en prefecture"],o:"ANEF en ligne puis prefecture",dl:"1-6 mois",c:"75-225 euros",er:["Hors delai","Pas de traductions assermentees","Ne pas renouveler le recepisse"],l:[{t:"ANEF",u:"https://administration-etrangers-en-france.interieur.gouv.fr"},{t:"service-public.fr",u:"https://www.service-public.fr/particuliers/vosdroits/N110"}],m:["titre sejour","carte sejour","etranger","visa","prefecture"]},
+
+{id:"nationalite",s:"citoyennete",t:"Naturalisation (nationalite francaise)",q:"Etranger majeur residant en France depuis 5+ ans (2 ans avec diplome francais).",p:"5 ans de residence. Casier vierge. Revenus stables. Francais B1 oral.",d:["Cerfa 12753","Piece d'identite + titre de sejour","Acte de naissance traduit","Domicile 5 ans","Ressources 3 ans","Imposition 3 ans","Casier du pays d'origine","Attestation francais B1","Timbre 55 euros"],e:["Constituer le dossier complet","RDV plateforme de naturalisation en prefecture","Deposer le dossier","Entretien d'assimilation","Transmission au ministere de l'Interieur","Decision (decret ou refus)","Ceremonie d'accueil si accord"],o:"Prefecture (plateforme naturalisation)",dl:"12-24 mois",c:"55 euros",er:["Dossier incomplet","Pas de traductions assermentees","Ne pas preparer l'entretien","Impots impayes = motif de refus"],l:[{t:"service-public.fr",u:"https://www.service-public.fr/particuliers/vosdroits/N111"}],m:["nationalite","naturalisation","devenir francais"]},
+
+{id:"inscription-electorale",s:"citoyennete",t:"Inscription sur les listes electorales",q:"Citoyen francais majeur. Citoyens UE pour municipales/europeennes.",p:"18 ans. Nationalite francaise (ou UE). Droits civiques.",d:["Piece d'identite","Justificatif de domicile < 3 mois"],e:["Aller sur service-public.fr ou en mairie","Remplir le formulaire","Joindre les justificatifs","Verification et inscription","Prise d'effet au 1er mars suivant"],o:"service-public.fr ou mairie",dl:"Inscription permanente. Effet au 1er mars.",c:"Gratuit",er:["Ne pas se reinscrire apres demenagement","Croire que c'est automatique","Depasser la date limite avant une election"],l:[{t:"service-public.fr",u:"https://www.service-public.fr/particuliers/vosdroits/N47"}],m:["vote","election","inscription electorale","carte electeur"]},
+
+{id:"casier-judiciaire",s:"citoyennete",t:"Casier judiciaire (bulletin n3)",q:"Toute personne souhaitant un extrait de son casier judiciaire.",p:"Etre la personne concernee.",d:["Piece d'identite (FranceConnect)"],e:["Aller sur casier-judiciaire.justice.gouv.fr","Remplir la demande en ligne","Reception par email ou courrier","Le B3 ne mentionne que les condamnations les plus graves"],o:"casier-judiciaire.justice.gouv.fr ou courrier au tribunal de Nantes",dl:"Quelques jours (en ligne) a 2 semaines",c:"Gratuit",er:["Confondre B1, B2 et B3","Mauvaise adresse d'envoi (tribunal de Nantes uniquement)"],l:[{t:"casier-judiciaire.justice.gouv.fr",u:"https://casier-judiciaire.justice.gouv.fr"}],m:["casier judiciaire","bulletin n3","extrait casier"]},
+
+{id:"auto-entrepreneur",s:"entreprise",t:"Devenir auto-entrepreneur",q:"Toute personne souhaitant une activite individuelle a CA limite.",p:"Majeur. Adresse en France. Plafonds : 188 700 (commerce) / 77 700 (services).",d:["Piece d'identite","Justificatif de domicile","Declaration non-condamnation","Attestation de filiation"],e:["Definir l'activite","Aller sur formalites.entreprises.gouv.fr","Creer un compte","Selectionner Micro-entrepreneur","Remplir le formulaire","Joindre les pieces","Valider","Recevoir le SIRET (1-4 semaines)","Creer l'espace autoentrepreneur.urssaf.fr"],o:"formalites.entreprises.gouv.fr",dl:"1-4 semaines",c:"Gratuit",er:["Versement liberatoire sans verifier","Oublier de declarer le CA (meme 0)","Pas de compte bancaire dedie si CA > 10 000 euros/an"],l:[{t:"Guichet Unique",u:"https://formalites.entreprises.gouv.fr"},{t:"URSSAF",u:"https://www.autoentrepreneur.urssaf.fr"}],m:["auto entrepreneur","micro entreprise","freelance","siret","urssaf"]},
+
+{id:"sasu",s:"entreprise",t:"Creer une SASU",q:"Societe unipersonnelle, responsabilite limitee, president assimile salarie.",p:"Majeur. Capital minimum 1 euro.",d:["Statuts signes","Attestation depot capital","Piece d'identite president","Siege social","Non-condamnation","Attestation JAL"],e:["Rediger les statuts","Deposer le capital","Publier au JAL","Formulaire sur formalites.entreprises.gouv.fr","Joindre les documents","Frais de greffe (~37 euros)","KBIS sous 1-2 semaines","Debloquer le capital"],o:"formalites.entreprises.gouv.fr",dl:"1-2 semaines",c:"250-500 euros",er:["Statuts incomplets","Oublier le JAL","Pas de clause de cession"],l:[{t:"Guichet Unique",u:"https://formalites.entreprises.gouv.fr"}],m:["sasu","societe","kbis","statuts"]},
+
+{id:"sarl",s:"entreprise",t:"Creer une SARL / EURL",q:"Societe a responsabilite limitee (SARL 2+ associes, EURL 1 associe).",p:"1+ associe. Capital libre (min 1 euro).",d:["Statuts signes par les associes","Attestation depot capital","Pieces d'identite gerants/associes","Siege social","Non-condamnation des gerants","Attestation JAL","Liste des souscripteurs"],e:["Rediger les statuts","Deposer le capital","Publier au JAL","Formulaire formalites.entreprises.gouv.fr","Joindre les documents","Frais de greffe (~37 euros)","Recevoir le KBIS","Immatriculation URSSAF pour le gerant"],o:"formalites.entreprises.gouv.fr",dl:"1-3 semaines",c:"300-600 euros",er:["Mauvaise repartition des parts","Gerant majoritaire = TNS (pas assimile salarie)","Pas de clause d'agrement"],l:[{t:"Guichet Unique",u:"https://formalites.entreprises.gouv.fr"}],m:["sarl","eurl","creer sarl","gerant"]},
+
+{id:"kbis",s:"entreprise",t:"Obtenir un extrait KBIS",q:"Tout dirigeant de societe au RCS.",p:"Societe immatriculee au RCS.",d:["Numero SIREN ou denomination"],e:["Aller sur monidenum.fr","Creer un compte dirigeant","Acceder au tableau de bord","Telecharger le KBIS gratuit","Valable 3 mois"],o:"monidenum.fr (gratuit) ou infogreffe.fr (~3 euros)",dl:"Immediat",c:"Gratuit sur monidenum.fr",er:["Payer alors que monidenum.fr est gratuit","KBIS de plus de 3 mois refuse","Confondre KBIS et extrait D1 (artisans)"],l:[{t:"monidenum.fr",u:"https://www.monidenum.fr"}],m:["kbis","extrait kbis","rcs","infogreffe"]},
+
+{id:"urssaf-declaration",s:"entreprise",t:"Declaration CA auto-entrepreneur (URSSAF)",q:"Tout auto-entrepreneur immatricule.",p:"Numero SIRET. Espace autoentrepreneur.urssaf.fr.",d:["Montant du CA encaisse"],e:["Se connecter a autoentrepreneur.urssaf.fr","Mes echeances en cours","Saisir le CA encaisse (mensuel ou trimestriel)","Declarer 0 si aucun encaissement (obligatoire)","Valider et payer les cotisations","Conserver le justificatif"],o:"autoentrepreneur.urssaf.fr ou appli URSSAF",dl:"Mensuelle ou trimestrielle selon option",c:"Cotisations : 12,3% a 21,2% du CA selon activite",er:["Ne pas declarer = radiation apres 24 mois","Un mois a 0 non declare = non-declaration","Confondre CA encaisse et facture"],l:[{t:"URSSAF",u:"https://www.autoentrepreneur.urssaf.fr"}],m:["urssaf","declaration ca","cotisations","charges"]},
+
+{id:"france-travail",s:"emploi",t:"Inscription a France Travail",q:"Personne sans emploi ou en fin de contrat.",p:"Perte involontaire d'emploi. 6 mois sur 24.",d:["Piece d'identite","Carte vitale","RIB","Attestation employeur","CV"],e:["S'inscrire sur francetravail.fr sous 12 mois","Remplir le formulaire","Joindre l'attestation employeur","RDV conseiller (2-3 semaines)","Definir le PPAE","Actualisation mensuelle"],o:"francetravail.fr puis agence",dl:"7 jours de carence",c:"Gratuit",er:["Inscription tardive","Oublier l'actualisation","Manquer une convocation"],l:[{t:"francetravail.fr",u:"https://www.francetravail.fr"}],m:["pole emploi","france travail","chomage","inscription"]},
+
+{id:"cpf",s:"emploi",t:"Compte personnel de formation (CPF)",q:"Tout actif 16+ ans.",p:"Compte moncompteformation.gouv.fr. Droits credites.",d:["France Connect+"],e:["Se connecter a moncompteformation.gouv.fr","Consulter les droits","Rechercher une formation","Verifier Qualiopi","S'inscrire et valider","Payer 100 euros (sauf demandeurs d'emploi)","Suivre la formation"],o:"moncompteformation.gouv.fr",dl:"Variable",c:"100 euros de participation depuis 2024",er:["Arnaques par telephone","Pas de verification Qualiopi","Gaspiller le CPF"],l:[{t:"moncompteformation.gouv.fr",u:"https://www.moncompteformation.gouv.fr"}],m:["cpf","formation","compte formation","reconversion"]},
+
+{id:"rupture-conventionnelle",s:"emploi",t:"Rupture conventionnelle",q:"Salarie en CDI + employeur, d'un commun accord.",p:"Etre en CDI. Accord mutuel.",d:["Cerfa 14598 (convention de rupture)"],e:["Entretien prealable avec l'employeur","Negocier les conditions (date, indemnite)","Signer la convention (cerfa 14598)","Delai de retractation : 15 jours calendaires","Transmission a la DREETS pour homologation","Homologation sous 15 jours ouvrables","Fin du contrat a la date convenue","S'inscrire a France Travail pour l'ARE"],o:"En entreprise puis DREETS via TeleRC",dl:"Minimum 1 mois (15j retractation + 15j homologation)",c:"Gratuit. Indemnite >= indemnite legale de licenciement.",er:["Signer sous pression","Ne pas negocier l'indemnite","Oublier le delai de retractation","Ne pas s'inscrire a France Travail ensuite"],l:[{t:"service-public.fr",u:"https://www.service-public.fr/particuliers/vosdroits/F19030"}],m:["rupture conventionnelle","quitter cdi","indemnite rupture"]},
+
+{id:"contrat-travail",s:"emploi",t:"Contrat de travail : droits et obligations",q:"Tout salarie ou futur salarie.",p:"Offre d'embauche ou poste occupe.",d:["Contrat ecrit (obligatoire CDD/temps partiel)","Piece d'identite","RIB","Carte vitale","Diplomes eventuels"],e:["Recevoir le contrat","Lire toutes les clauses (essai, horaires, remuneration, non-concurrence)","Signer en deux exemplaires","Conserver un exemplaire","Verifier la DPAE par l'employeur","Recevoir le premier bulletin de paie"],o:"En entreprise",dl:"Contrat remis sous 2 jours ouvrables (CDD)",c:"Gratuit",er:["Ne pas lire les clauses","CDD pour un poste permanent (illegal)","Pas d'exemplaire conserve"],l:[{t:"service-public.fr",u:"https://www.service-public.fr/particuliers/vosdroits/N19871"}],m:["contrat travail","cdi","cdd","embauche","droits salarie"]},
+
+{id:"apprentissage",s:"emploi",t:"Contrat d'apprentissage",q:"16-29 ans (sans limite pour handicapes). Alternance emploi/formation.",p:"16-29 ans. Employeur + CFA trouves.",d:["Cerfa 10103","Piece d'identite","Titre de sejour (etrangers)","Attestation CFA"],e:["Trouver un employeur","Trouver un CFA","L'employeur remplit le cerfa","Signature a trois (employeur, apprenti, CFA)","Transmission a l'OPCO","Validation et enregistrement","Debut de la formation"],o:"Signature employeur. Enregistrement OPCO.",dl:"Peut demarrer 3 mois avant/apres la formation",c:"Gratuit. Remuneration 27-100% du SMIC.",er:["Ne pas connaitre la carte d'etudiant des metiers","Pas de maitre d'apprentissage qualifie","Ignorer la periode d'essai de 45 jours"],l:[{t:"service-public.fr",u:"https://www.service-public.fr/particuliers/vosdroits/F2918"}],m:["apprentissage","alternance","cfa","formation alternance"]},
+
+{id:"declaration-impots",s:"fiscalite",t:"Declaration d'impots sur le revenu",q:"Toute personne majeure domiciliee en France.",p:"Numero fiscal. Acces impots.gouv.fr.",d:["Numero fiscal","Bulletins de paie","Revenus complementaires","Justificatifs deductions","RIB"],e:["Se connecter a impots.gouv.fr (avril-juin)","Verifier les pre-remplis","Corriger si besoin","Ajouter revenus non pre-remplis","Declarer charges deductibles","Signer et valider","Avis d'imposition entre juillet et septembre"],o:"impots.gouv.fr",dl:"Mai-juin. Avis juillet-aout.",c:"Gratuit",er:["Pre-remplis non verifies","Revenus complementaires oublies","Date limite depassee (10% penalite)","Ne pas declarer meme si non imposable"],l:[{t:"impots.gouv.fr",u:"https://www.impots.gouv.fr"}],m:["impots","declaration impots","declaration revenus","avis imposition"]},
+
+{id:"numero-fiscal",s:"fiscalite",t:"Obtenir son numero fiscal",q:"Personne faisant sa premiere declaration ou n'ayant jamais eu de numero fiscal.",p:"Resider en France ou revenus de source francaise.",d:["Piece d'identite","Justificatif de domicile","RIB"],e:["Se rendre au SIP (centre des finances publiques) de votre domicile","Demander l'attribution d'un numero fiscal","Presenter piece d'identite et domicile","Recevoir le numero et identifiants impots.gouv.fr"],o:"Au SIP ou par courrier/email",dl:"Quelques jours a 2 semaines",c:"Gratuit",er:["Ne pas trouver son SIP (annuaire sur impots.gouv.fr)","Confondre numero fiscal et numero Secu"],l:[{t:"impots.gouv.fr",u:"https://www.impots.gouv.fr/contacts"}],m:["numero fiscal","premier impot","identifiant fiscal"]},
+
+{id:"prelevement-source",s:"fiscalite",t:"Prelevement a la source : gerer son taux",q:"Tout contribuable preleve a la source.",p:"Espace impots.gouv.fr.",d:["Aucun document"],e:["Se connecter a impots.gouv.fr","Gerer mon prelevement a la source","Choisir : taux personnalise, individualise ou neutre","Actualiser en cas de changement de situation","Nouveau taux applique sous 1-2 mois"],o:"impots.gouv.fr",dl:"1-2 mois apres modification",c:"Gratuit",er:["Ne pas actualiser apres changement de revenus","Ne pas connaitre le taux individualise pour couples","Le prelevement ne remplace pas la declaration annuelle"],l:[{t:"impots.gouv.fr",u:"https://www.impots.gouv.fr/particulier/le-prelevement-la-source"}],m:["prelevement source","taux impot","modifier taux"]},
+
+{id:"taxe-fonciere",s:"fiscalite",t:"Taxe fonciere",q:"Tout proprietaire d'un bien immobilier au 1er janvier.",p:"Etre proprietaire.",d:["Aucun (avis automatique)"],e:["Recevoir l'avis sur impots.gouv.fr (sept-oct)","Verifier le montant","Payer avant mi-octobre","En ligne ou prelevement automatique","En difficulte : demander un echeancier au SIP"],o:"impots.gouv.fr",dl:"Avis septembre. Paiement mi-octobre.",c:"Variable selon commune et valeur du bien",er:["Retard de paiement (majoration 10%)","Ne pas signaler un changement de propriete","Ignorer les exonerations possibles"],l:[{t:"impots.gouv.fr",u:"https://www.impots.gouv.fr/particulier/questions/comment-est-calculee-ma-taxe-fonciere"}],m:["taxe fonciere","impot propriete","impot maison","foncier"]},
+
+{id:"credit-impot",s:"fiscalite",t:"Credits et reductions d'impot",q:"Contribuable avec des depenses ouvrant droit a un avantage fiscal.",p:"Depenses eligibles dans l'annee.",d:["Justificatifs de depenses (recus dons, factures emploi a domicile, frais de garde, travaux...)"],e:["Identifier les depenses eligibles","Rassembler les justificatifs","Remplir les cases correspondantes dans la declaration","Principaux credits : emploi a domicile (50%), garde enfants (50%), dons (66-75%), travaux energetiques","Le credit d'impot est rembourse meme si superieur a l'impot","Conserver les justificatifs 3 ans"],o:"Lors de la declaration annuelle sur impots.gouv.fr",dl:"Applique sur l'avis. Acompte 60% en janvier (si recurrent).",c:"Gratuit (c'est un remboursement)",er:["Confondre credit (rembourse) et reduction (non remboursee)","Oublier des depenses eligibles","Ne pas garder les justificatifs"],l:[{t:"impots.gouv.fr",u:"https://www.impots.gouv.fr/particulier/les-reductions-et-credits-dimpot"}],m:["credit impot","reduction impot","don impot","emploi domicile"]},
+
+{id:"permis-conduire",s:"quotidien",t:"Permis de conduire",q:"Personne de 17+ ans residant en France.",p:"Age requis. Code de la route obtenu.",d:["Piece d'identite","Justificatif de domicile","E-photo","NEPH (ants.gouv.fr)"],e:["Inscription ants.gouv.fr pour le NEPH","S'inscrire au code","Passer le code","Formation pratique (20h min)","Passer l'epreuve pratique","Permis envoye par courrier"],o:"ants.gouv.fr + auto-ecole",dl:"1-3 mois pour l'examen pratique",c:"1 500-2 000 euros. CPF utilisable.",er:["Ne pas savoir que le CPF finance le permis","Choisir sur le prix seul","Code expire (5 ans)"],l:[{t:"ants.gouv.fr",u:"https://ants.gouv.fr/demarches-permis-de-conduire"}],m:["permis conduire","permis b","auto ecole","code route"]},
+
+{id:"carte-grise",s:"quotidien",t:"Carte grise (immatriculation)",q:"Acheteur de vehicule ou changement a signaler.",p:"Achat vehicule ou changement.",d:["Ancienne carte grise barree","Cerfa 13750","Piece d'identite","Domicile","CT < 6 mois (si > 4 ans)","Certificat de cession"],e:["ants.gouv.fr","Se connecter","Type de demande","Remplir","Telecharger les justificatifs","Payer la taxe","CPI par email (immediat)","Carte definitive sous 1-2 semaines"],o:"ants.gouv.fr uniquement",dl:"CPI immediat. Carte sous 1-2 semaines.",c:"Variable",er:["Sites non officiels (arnaques)","Oublier changement d'adresse (135 euros amende)","Pas de CT avant achat"],l:[{t:"ants.gouv.fr",u:"https://ants.gouv.fr/demarches-certificat-d-immatriculation"}],m:["carte grise","immatriculation","acheter voiture"]},
+
+{id:"inscription-scolaire",s:"quotidien",t:"Inscription scolaire (maternelle/elementaire)",q:"Parent d'enfant en age scolaire (3 ans maternelle, 6 ans elementaire).",p:"Age requis. Resider dans la commune.",d:["Livret de famille ou acte de naissance","Justificatif de domicile","Carnet de sante (vaccins)","Certificat de radiation (si changement)"],e:["Se rendre en mairie (janvier-juin)","Recevoir le certificat d'inscription","Se rendre a l'ecole avec le certificat","Le directeur finalise l'admission"],o:"Mairie puis ecole",dl:"Janvier-juin. Admission avant la rentree.",c:"Gratuit",er:["S'y prendre trop tard","Vaccins pas a jour","Oublier le certificat de radiation"],l:[{t:"service-public.fr",u:"https://www.service-public.fr/particuliers/vosdroits/F1864"}],m:["inscription ecole","inscription scolaire","maternelle","rentree"]},
+
+{id:"procuration",s:"quotidien",t:"Procuration de vote",q:"Electeur ne pouvant pas voter en personne.",p:"Inscrit sur les listes electorales.",d:["Piece d'identite","Identite du mandataire"],e:["Aller sur maprocuration.gouv.fr","Remplir le formulaire","Confirmation par email","Valider en commissariat ou gendarmerie","La procuration est transmise a la mairie","Le mandataire vote a votre place"],o:"maprocuration.gouv.fr + commissariat",dl:"Quelques jours avant le scrutin",c:"Gratuit",er:["S'y prendre le dernier jour","Max 2 procurations par mandataire","Ne pas informer le mandataire"],l:[{t:"maprocuration.gouv.fr",u:"https://www.maprocuration.gouv.fr"}],m:["procuration","vote","election","absent"]},
+
+{id:"compte-bancaire",s:"quotidien",t:"Ouverture de compte bancaire (et droit au compte)",q:"Toute personne residant en France.",p:"Piece d'identite et justificatif de domicile.",d:["Piece d'identite","Justificatif de domicile < 3 mois","Specimen de signature"],e:["Choisir une banque","Remplir le formulaire d'ouverture","Fournir les justificatifs","Signer la convention","Recevoir RIB, carte, codes","En cas de refus : demander la lettre de refus","Saisir la Banque de France (droit au compte)","La BdF designe un etablissement sous 1 jour"],o:"En agence, en ligne, ou Banque de France",dl:"Immediat a quelques jours",c:"Variable. Certains comptes gratuits.",er:["Ne pas connaitre le droit au compte","Accepter un refus sans justification ecrite","Ne pas comparer les offres"],l:[{t:"service-public.fr",u:"https://www.service-public.fr/particuliers/vosdroits/F2417"}],m:["compte bancaire","ouvrir compte","banque","rib","droit au compte"]},
+
+{id:"declaration-naissance",s:"famille",t:"Declaration de naissance",q:"Parent d'un enfant ne en France.",p:"Naissance en France. Sous 5 jours.",d:["Certificat medical d'accouchement","Pieces d'identite parents","Livret de famille","Reconnaissance prenatale (si non maries)","Domicile"],e:["Certificat medical a la maternite","Mairie du lieu de naissance sous 5 jours","Presenter les documents","Choisir prenoms et nom","Signer l'acte","Recuperer copies et livret de famille"],o:"Mairie du lieu de naissance",dl:"Sous 5 jours. Acte immediat.",c:"Gratuit",er:["Depasser 5 jours (tribunal)","Non maries : oublier la reconnaissance prenatale","Choix du nom non prepare"],l:[{t:"service-public.fr",u:"https://www.service-public.fr/particuliers/vosdroits/F961"}],m:["naissance","declaration naissance","acte naissance","bebe"]},
+
+{id:"pacs",s:"famille",t:"PACS",q:"Deux personnes majeures souhaitant organiser leur vie commune.",p:"Majeur. Pas marie/pacse. Pas de parente directe.",d:["Convention de PACS","Pieces d'identite","Actes de naissance < 3 mois","Attestation sur l'honneur"],e:["Rediger la convention","Reunir les pieces","RDV en mairie ou notaire","Se presenter ensemble","Enregistrer le PACS","Recuperer le recepisse","Declaration fiscale commune"],o:"Mairie (gratuit) ou notaire (400-500 euros)",dl:"Immediat le jour du RDV",c:"Gratuit en mairie",er:["Pas de convention personnalisee","Oublier CAF/CPAM/employeur","Dissolution par simple declaration"],l:[{t:"service-public.fr",u:"https://www.service-public.fr/particuliers/vosdroits/N144"}],m:["pacs","union","vie commune","couple"]},
+
+{id:"mariage",s:"famille",t:"Mariage civil",q:"Deux personnes majeures.",p:"Majeur. Pas deja marie. Pas de parente prohibee.",d:["Pieces d'identite","Actes de naissance < 3 mois","Domicile","Infos temoins (2-4)","Certificat notaire (si contrat de mariage)","Certificat de coutume (si etranger)"],e:["Retirer le dossier en mairie","Remplir avec les pieces","Deposer au moins 1 mois avant","Publication des bans (10 jours)","Ceremonie a la mairie avec temoins","Signature de l'acte","Livret de famille"],o:"Mairie du domicile de l'un des epoux",dl:"Depot 1 mois avant. Bans 10 jours.",c:"Gratuit (contrat notaire : 350-500 euros)",er:["Dossier depose trop tard","Oublier le contrat de mariage si necessaire","Traductions assermentees pour actes etrangers"],l:[{t:"service-public.fr",u:"https://www.service-public.fr/particuliers/vosdroits/N142"}],m:["mariage","se marier","bans","livret famille"]},
+
+{id:"divorce",s:"famille",t:"Divorce",q:"Couple marie souhaitant mettre fin au mariage.",p:"Etre marie. Avocat obligatoire.",d:["Acte de mariage","Livret de famille","Pieces d'identite","Revenus et patrimoine","Convention de divorce (si consentement mutuel)"],e:["Choisir le type (consentement mutuel, accepte, alteration, faute)","Consulter un avocat (obligatoire)","Consentement mutuel : convention + 15 jours de reflexion + depot chez notaire","Contentieux : saisine du juge","Decision du juge","Transcription sur les actes d'etat civil"],o:"Avocats + notaire (amiable) ou tribunal (contentieux)",dl:"3-6 mois (amiable) a 1-3 ans (contentieux)",c:"1 000-4 000 euros (amiable). Plus en contentieux.",er:["Ne pas savoir que le consentement mutuel est le plus rapide","Oublier CAF et impots","Pas d'anticipation des consequences fiscales"],l:[{t:"service-public.fr",u:"https://www.service-public.fr/particuliers/vosdroits/N159"}],m:["divorce","separation","fin mariage","avocat divorce"]},
+
+{id:"succession",s:"famille",t:"Succession apres un deces",q:"Heritier ou proche d'une personne decedee.",p:"Acte de deces. Heritiers connus.",d:["Acte de deces","Livret de famille","Pieces d'identite heritiers","Testament","Comptes bancaires","Titres de propriete"],e:["Declarer le deces en mairie sous 24h","Contacter banque, assurance, employeur, Secu, retraite","Si patrimoine > 5 000 euros ou immobilier : notaire","Acte de notoriete (liste heritiers)","Inventaire du patrimoine","Accepter, accepter a concurrence, ou renoncer","Partage des biens","Declaration de succession aux impots sous 6 mois"],o:"Mairie (deces), notaire (succession), impots",dl:"Declaration impots sous 6 mois",c:"Notaire : 1-2% de l'actif. Droits de succession variables.",er:["Ne pas declarer sous 24h","Ne pas contacter les organismes rapidement","Oublier la declaration fiscale","Frais d'obseques prelevables sur le compte du defunt (max 5 000 euros)"],l:[{t:"service-public.fr",u:"https://www.service-public.fr/particuliers/vosdroits/F1199"}],m:["succession","deces","heritage","notaire succession"]},
+
+{id:"garde-enfants",s:"famille",t:"Garde d'enfants et CMG",q:"Parents d'enfants de moins de 6 ans.",p:"Assistante maternelle, garde a domicile ou micro-creche.",d:["Numero allocataire CAF","Contrat de travail (assistante maternelle)","Bulletins de paie"],e:["Choisir le mode de garde","Assistante maternelle : declarer sur pajemploi.urssaf.fr","Demander le CMG sur caf.fr","Calcul selon revenus, age, mode de garde","Versement mensuel","Declaration mensuelle sur Pajemploi"],o:"caf.fr (CMG) + pajemploi.urssaf.fr",dl:"Versement le mois suivant",c:"CMG couvre une partie. Reste a charge variable.",er:["Ne pas connaitre le CMG","Oublier Pajemploi mensuel","Ne pas verifier l'agrement de l'assistante maternelle"],l:[{t:"caf.fr - CMG",u:"https://www.caf.fr/allocataires/droits-et-prestations/s-informer-sur-les-aides/petite-enfance/le-complement-de-libre-choix-du-mode-de-garde"},{t:"pajemploi.urssaf.fr",u:"https://www.pajemploi.urssaf.fr"}],m:["garde enfant","assistante maternelle","creche","cmg","pajemploi","nounou"]},
+];
+
+// ============================================================
+function norm(s){return s.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"");}
+function searchD(q){if(!q||q.trim().length<2)return[];const n=norm(q);return D.filter(d=>{const f=norm([d.t,d.q,...d.m].join(" "));return n.split(/\s+/).every(w=>f.includes(w));}).slice(0,8);}
+let sFocused=false;
+function onSearch(){const q=document.getElementById("searchInput").value;document.getElementById("searchClear").classList.toggle("show",!!q);const r=searchD(q);const box=document.getElementById("searchResults");if(r.length>0&&sFocused){box.innerHTML=r.map(d=>{const sec=SECTEURS.find(s=>s.id===d.s);return`<button class="search-item" onclick="showDemarche('${d.id}');clearSearch()"><div class="search-dot" style="background:${sec.couleur}"></div><div><div class="search-item-title">${d.t}</div><div class="search-item-cat">${sec.nom}</div></div></button>`;}).join("");box.classList.add("active");}else box.classList.remove("active");}
+function onSearchFocus(){sFocused=true;onSearch();}
+function clearSearch(){document.getElementById("searchInput").value="";document.getElementById("searchClear").classList.remove("show");document.getElementById("searchResults").classList.remove("active");}
+document.addEventListener("click",e=>{if(!e.target.closest(".search-box")){sFocused=false;document.getElementById("searchResults").classList.remove("active");}});
+
+function hideAll(){["homePage","secteurPage","demarchePage","chatPage"].forEach(id=>document.getElementById(id).classList.add("hidden"));document.getElementById("chatBtn").classList.remove("active");}
+function showHome(){hideAll();document.getElementById("homePage").classList.remove("hidden");window.scrollTo(0,0);}
+function showSecteur(id){hideAll();const sec=SECTEURS.find(s=>s.id===id);const demarches=D.filter(d=>d.s===id);const pg=document.getElementById("secteurPage");pg.innerHTML=`<button class="back-btn" onclick="showHome()">\u2190 Retour</button><div class="secteur-header"><div class="secteur-icon" style="background:${sec.cl}">${sec.emoji}</div><div><div class="secteur-title">${sec.nom}</div><div class="secteur-count">${demarches.length} demarche${demarches.length>1?'s':''}</div></div></div><div class="demarche-list">${demarches.map(d=>`<button class="demarche-item" onclick="showDemarche('${d.id}')"><div><div class="demarche-item-title">${d.t}</div><div class="demarche-item-sub">${d.q.substring(0,90)}...</div></div><span style="color:#94a3b8;flex-shrink:0">\u203A</span></button>`).join("")}</div>`;pg.classList.remove("hidden");window.scrollTo(0,0);}
+function showDemarche(id){hideAll();const d=D.find(x=>x.id===id);const sec=SECTEURS.find(s=>s.id===d.s);const pg=document.getElementById("demarchePage");const S=(i,ti,co,col)=>`<div class="section"><div class="section-head"><span style="color:${col||sec.couleur};font-size:18px">${i}</span><span class="section-title">${ti}</span></div><div class="section-body">${co}</div></div>`;let h=`<button class="back-btn" onclick="showSecteur('${sec.id}')">\u2190 ${sec.nom}</button><div class="demarche-banner" style="background:${sec.cl};border-left-color:${sec.couleur}"><h1>${d.t}</h1><div class="demarche-meta"><span>Delais : ${d.dl}</span><span>Cout : ${d.c}</span></div></div>`;h+=S("\uD83D\uDC65","Pour qui ?",`<p>${d.q}</p>`);h+=S("\u2139\uFE0F","Prerequis",`<p>${d.p}</p>`);h+=S("\uD83D\uDCC4","Documents a fournir",d.d.map(x=>`<div class="doc-item"><div class="doc-dot" style="background:${sec.couleur}"></div><span>${x}</span></div>`).join(""));h+=S("\u2705","Etapes",d.e.map((x,i)=>`<div class="step-item"><div class="step-num" style="border-color:${sec.couleur};color:${sec.couleur};background:${sec.cl}">${i+1}</div><span style="padding-top:2px">${x}</span></div>`).join(""));h+=S("\uD83C\uDFDB\uFE0F","Ou faire la demarche",`<p>${d.o}</p>`);h+=S("\u23F0","Delais",`<p>${d.dl}</p>`);h+=S("\uD83D\uDCB2","Cout",`<p>${d.c}</p>`);h+=S("\u26A0\uFE0F","Erreurs frequentes",d.er.map(x=>`<div class="err-item"><span style="flex-shrink:0">\u26A0\uFE0F</span><span>${x}</span></div>`).join(""),"\u0023d97706");h+=S("\uD83D\uDD17","Liens officiels",d.l.map(x=>`<a class="link-item" href="${x.u}" target="_blank">\uD83D\uDD17 ${x.t}</a>`).join(""));pg.innerHTML=h;pg.classList.remove("hidden");window.scrollTo(0,0);}
+function showChat(){hideAll();const cp=document.getElementById("chatPage");cp.classList.remove("hidden");cp.style.height=(window.innerHeight-document.querySelector('.header').offsetHeight)+'px';document.getElementById("chatBtn").classList.add("active");setTimeout(()=>document.getElementById("chatInput").focus(),100);}
+
+document.getElementById("secteursGrid").innerHTML=SECTEURS.map(s=>{const c=D.filter(d=>d.s===s.id).length;return`<div class="card" onclick="showSecteur('${s.id}')" onmouseenter="this.style.borderColor='${s.couleur}'" onmouseleave="this.style.borderColor='#e2e8f0'"><div class="card-icon" style="background:${s.cl}">${s.emoji}</div><div><div class="card-name">${s.nom}</div><div class="card-desc">${s.description}</div></div><div class="card-count">${c} demarche${c>1?'s':''}</div></div>`;}).join("");
+
+// Resize chat on orientation change
+window.addEventListener('resize',()=>{const cp=document.getElementById("chatPage");if(!cp.classList.contains("hidden")){cp.style.height=(window.innerHeight-document.querySelector('.header').offsetHeight)+'px';}});
+
+// ============================================================
+// CHATBOT - LOCAL FIRST, API FALLBACK
+// ============================================================
+
+function localResponse(msg) {
+  const q = norm(msg);
+  
+  // Greetings
+  if (/^(bonjour|salut|hello|coucou|hey|bonsoir)/.test(q)) {
+    return "Bonjour ! Je suis l'assistant administratif de CFLP. Comment puis-je vous aider ? Vous pouvez me poser une question sur une demarche administrative en France, par exemple :\n\n- Comment obtenir ma carte vitale ?\n- Comment demander les APL ?\n- Comment creer une auto-entreprise ?\n- Comment faire un passeport ?";
+  }
+  
+  // Thanks
+  if (/^(merci|thanks|parfait|super|genial|ok merci)/.test(q)) {
+    return "Avec plaisir ! N'hesitez pas si vous avez d'autres questions sur vos demarches administratives.";
+  }
+
+  // Search matching demarches
+  const matches = D.filter(d => {
+    const fields = norm([d.t, d.q, ...d.m].join(" "));
+    const words = q.split(/\s+/).filter(w => w.length > 2);
+    if (words.length === 0) return false;
+    const matchCount = words.filter(w => fields.includes(w)).length;
+    return matchCount >= Math.max(1, Math.ceil(words.length * 0.4));
+  });
+
+  if (matches.length === 0) {
+    // Try broader single-word match
+    const words = q.split(/\s+/).filter(w => w.length > 3);
+    const broadMatches = [];
+    for (const d of D) {
+      const fields = norm([d.t, ...d.m].join(" "));
+      if (words.some(w => fields.includes(w))) broadMatches.push(d);
+    }
+    if (broadMatches.length > 0) {
+      let resp = "Voici les demarches qui pourraient correspondre a votre question :\n\n";
+      broadMatches.slice(0, 3).forEach(d => {
+        const sec = SECTEURS.find(s => s.id === d.s);
+        resp += "--- " + d.t + " (" + sec.nom + ") ---\n";
+        resp += "Pour qui : " + d.q + "\n";
+        resp += "Ou faire : " + d.o + "\n";
+        resp += "Delais : " + d.dl + "\n";
+        resp += "Cout : " + d.c + "\n\n";
+      });
+      resp += "Pour voir le detail complet d'une demarche avec les documents et etapes, utilisez la barre de recherche ou naviguez par secteur.";
+      return resp;
+    }
+    return "Je n'ai pas trouve de demarche correspondant a votre question dans ma base de donnees. Essayez de reformuler ou de chercher par mot-cle (ex: carte vitale, APL, passeport, auto-entrepreneur...).\n\nVous pouvez aussi naviguer par secteur depuis la page d'accueil pour trouver votre demarche.";
+  }
+
+  // Single best match - give full detail
+  if (matches.length === 1 || (matches.length > 1 && norm(matches[0].t).includes(q.split(/\s+/)[0]))) {
+    const d = matches[0];
+    const sec = SECTEURS.find(s => s.id === d.s);
+    let resp = d.t + "\n(Secteur : " + sec.nom + ")\n\n";
+    resp += "Pour qui : " + d.q + "\n\n";
+    resp += "Prerequis : " + d.p + "\n\n";
+    resp += "Documents a fournir :\n";
+    d.d.forEach(doc => { resp += "  - " + doc + "\n"; });
+    resp += "\nEtapes :\n";
+    d.e.forEach((et, i) => { resp += (i+1) + ". " + et + "\n"; });
+    resp += "\nOu faire la demarche : " + d.o + "\n";
+    resp += "Delais : " + d.dl + "\n";
+    resp += "Cout : " + d.c + "\n\n";
+    resp += "Erreurs frequentes a eviter :\n";
+    d.er.forEach(er => { resp += "  - " + er + "\n"; });
+    if (d.l.length > 0) {
+      resp += "\nLiens officiels :\n";
+      d.l.forEach(l => { resp += "  " + l.t + " : " + l.u + "\n"; });
+    }
+    return resp;
+  }
+
+  // Multiple matches - list them
+  let resp = "J'ai trouve " + matches.length + " demarches qui pourraient vous interesser :\n\n";
+  matches.slice(0, 4).forEach(d => {
+    const sec = SECTEURS.find(s => s.id === d.s);
+    resp += "--- " + d.t + " ---\n";
+    resp += "Pour qui : " + d.q + "\n";
+    resp += "Ou faire : " + d.o + " | Delais : " + d.dl + " | Cout : " + d.c + "\n\n";
+  });
+  resp += "Posez-moi une question plus precise sur l'une de ces demarches pour avoir tous les details (documents, etapes, erreurs a eviter).";
+  return resp;
+}
+
+let chatH = [];
+async function sendChat() {
+  const inp = document.getElementById("chatInput");
+  const msg = inp.value.trim();
+  if (!msg) return;
+  inp.value = "";
+  updateSendBtn();
+  addMsg("user", msg);
+  
+  const ty = document.createElement("div");
+  ty.className = "typing-indicator";
+  ty.textContent = "En train de reflechir...";
+  document.getElementById("chatMessages").appendChild(ty);
+  ty.scrollIntoView({ behavior: "smooth" });
+
+  // Try API first, fall back to local
+  let responded = false;
+  
+  try {
+    const apiMessages = [...chatH, { role: "user", content: msg }];
+    const res = await fetch("https://api.anthropic.com/v1/messages", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        model: "claude-sonnet-4-20250514",
+        max_tokens: 1000,
+        system: "Tu es l'assistant administratif de CFLP. Tu aides a comprendre les demarches administratives en France. Reponds UNIQUEMENT sur l'administration francaise. Jamais de conseil juridique. Cite tes sources. Reponds en francais, clairement, en texte simple sans formatage markdown (pas de ## ni ** ni - pour les listes). Utilise des numeros pour les etapes.",
+        messages: apiMessages
+      })
+    });
+    if (res.ok) {
+      const data = await res.json();
+      const text = data.content?.map(c => c.text || "").join("");
+      if (text) {
+        chatH = apiMessages;
+        chatH.push({ role: "assistant", content: text });
+        ty.remove();
+        addMsg("bot", text);
+        responded = true;
+      }
+    }
+  } catch (err) {
+    // API failed, will use local
+  }
+
+  if (!responded) {
+    const localResp = localResponse(msg);
+    chatH.push({ role: "user", content: msg });
+    chatH.push({ role: "assistant", content: localResp });
+    ty.remove();
+    addMsg("bot", localResp);
+  }
+}
+
+function md2h(t){let h=t;h=h.replace(/\*\*(.+?)\*\*/g,'<span style="font-weight:600">$1</span>');h=h.replace(/\*(.+?)\*/g,'<em>$1</em>');h=h.replace(/\n/g,'<br>');return h;}
+
+function addMsg(role, text) {
+  const div = document.createElement("div");
+  div.className = "msg " + (role === "user" ? "user" : "bot");
+  const bubble = document.createElement("div");
+  bubble.className = "msg-bubble";
+  if (role === "user") {
+    bubble.textContent = text;
+  } else {
+    bubble.innerHTML = md2h(esc(text));
+  }
+  div.appendChild(bubble);
+  document.getElementById("chatMessages").appendChild(div);
+  div.scrollIntoView({ behavior: "smooth" });
+}
+function esc(s) { return s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;"); }
+function updateSendBtn() { document.getElementById("chatSend").classList.toggle("active", !!document.getElementById("chatInput").value.trim()); }
+</script>
+</body>
+</html>
